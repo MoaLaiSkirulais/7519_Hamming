@@ -1,0 +1,11 @@
+all:
+	
+#	compiler
+	@$(GCC) -I../source $(FLAGS) -c ../tests/main.c -o ../binary/main.o
+	
+#	linker
+	@$(GCC) ../binary/main.o \
+		../binary/tdc_Hamming_Reader.o \
+		../binary/tap.o \
+		$(LFLAGS) -o \
+		../binary/$(EXEFILE)

@@ -12,6 +12,9 @@
  */
 typedef struct tdc_Hamming_Reader {
 	
+	char sourcePath[100];
+	char *buffer;
+		
 	int (*read)();
 
 } tdc_Hamming_Reader;

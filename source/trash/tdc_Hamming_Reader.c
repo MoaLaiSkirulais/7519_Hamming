@@ -25,7 +25,6 @@ static int read(tdc_Hamming_Reader *this) {
 		
 	    fread(readedBuffer, yorBufferSize, 1, pFile);
 
-		
 		// byteCount = fread(&buffer, 1, 1, file);
 		// while (byteCount > 0){
 			// printf("buffer: %c\n", buffer);

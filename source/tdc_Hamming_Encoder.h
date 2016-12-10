@@ -27,6 +27,9 @@ typedef struct tdc_Hamming_Encoder {
 	char input;
 	char output;
 	
+	char *outBuffer; 
+	
+	int (*destroy)();
 	int (*encodeBuffer)();
 	int (*encodeByte)();
 

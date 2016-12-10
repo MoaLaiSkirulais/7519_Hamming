@@ -17,7 +17,7 @@ typedef struct tdc_Hamming_File {
 	
 	char *inBuffer; 
 	char *outBuffer; 
-
+	
 	int (*destroy)();
 	int (*read)();
 	int (*write)();

@@ -1,7 +1,7 @@
 #include "tdc_Hamming_File.h"
 
 /* 
- * tdc_Hamming_File.read()
+ * read()
  */
 static int read(tdc_Hamming_File *this) {
 
@@ -20,24 +20,25 @@ static int read(tdc_Hamming_File *this) {
 
 	/* lectura ok lee byte a byte */
 	if (file) {
-		
-	    // fread(readedBuffer, yorBufferSize, 1, pFile);
-		
+
 		fseek(file, 0, SEEK_END);
 		long fsize = ftell(file);
 		fseek(file, 0, SEEK_SET);  //same as rewind(f);
+		
+		printf("fsize: %lu\n", fsize);
 
-		this->inBuffer = realloc(this->inBuffer, fsize + 1);
+		this->inBuffer = realloc(this->inBuffer, fsize + 1);		
+		printf("this->inBuffer: %ld\n", sizeof(this->inBuffer));
+		
+		// char *aux = malloc(111);	
+		// printf("aux: %lu\n", sizeof(aux));
+		// strcpy(aux, "hol");
+		// printf("aux: %ld\n", sizeof(aux));
+
 		fread(this->inBuffer, fsize, 1, file);
+		this->inBuffer[fsize] = '\0';
 		// printf("this->inBuffer: %s\n", this->inBuffer);
 		
-		// byteCount = fread(&buffer, 1, 1, file);
-		// while (byteCount > 0){
-			// printf("buffer: %c\n", buffer);
-			// // printf("byteCount: %d\n", byteCount);
-			// byteCount = fread(&buffer, 1, 1, file);
-			// printBits(sizeof(buffer), &buffer);
-		// }		
 	}
 
 	/* fin */
@@ -47,27 +48,22 @@ static int read(tdc_Hamming_File *this) {
 }
 
 /* 
- * tdc_Hamming_File.write()
+ * write()
  */
 static int write(tdc_Hamming_File *this) {
 
 	/* open file */
 	FILE *file;
 	file = fopen(this->outPath, "wb");
-	
+
 	/* error de apertura */
 	if (!file) {
 		return TDC_HAMMING_FILE_ERROR_INVALID_TARGET_FILE;
 	}
-	
-	// this->outBuffer = malloc(strlen("HelloWorld!"));
-	// sprintf(this->buffer, "%s", "HelloWorld!");
 
 	/* Write your buffer to disk. */
 	fwrite(this->outBuffer, strlen(this->outBuffer) + 1, 1, file);
-
 	fclose(file);
-	// free(this->outBuffer);
 
 	/* fin */
 	return TDC_HAMMING_OK;
@@ -85,12 +81,12 @@ static int destroy(tdc_Hamming_File *this) {
 }
 
 /*
- * tdc_Hamming_File_init
+ * tdc_Hamming_File_init()
  */
 int tdc_Hamming_File_init(tdc_Hamming_File *obj) {
 	
 	obj->inBuffer = malloc(sizeof(char));
-	strcpy(obj->inBuffer, "");
+	strcpy(obj->inBuffer, "");	
 
 	obj->destroy = destroy;
 	obj->read = read;

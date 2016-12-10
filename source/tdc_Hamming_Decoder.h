@@ -7,6 +7,7 @@
 
 #include "tdc_Hamming_Encoder.h"
 #include "tdc_Hamming_Error.h"
+#include "tdc_Hamming_Helper.h"
 
 /* 
  * tdc_Hamming_Decoder
@@ -17,6 +18,11 @@ typedef struct tdc_Hamming_Decoder {
 	char input;
 	char output;
 	
+	unsigned char outNibble;
+	
+	unsigned char *outBuffer; 
+	
+	int (*destroy)();
 	int (*decodeBuffer)();
 	int (*decodeByte)();
 

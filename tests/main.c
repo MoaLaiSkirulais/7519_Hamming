@@ -39,11 +39,11 @@ int main() {
 
 		encoder.input = 0b00000011; 
 		encoder.encodeByte(&encoder);
-		cmp_ok(encoder.output, "==", 0b0111100, "tdc_Hamming_Encoder encodeByte 2");
+		cmp_ok(encoder.output, "==", 0b0011110, "tdc_Hamming_Encoder encodeByte 2");
 
 		encoder.input = 0b0110; 
 		encoder.encodeByte(&encoder);
-		cmp_ok(encoder.output, "==", 0b1100110, "tdc_Hamming_Encoder encodeByte 3");
+		cmp_ok(encoder.output, "==", 0b0110011, "tdc_Hamming_Encoder encodeByte 3");
 		encoder.destroy(&encoder);
 	}
 
@@ -53,16 +53,16 @@ int main() {
 		tdc_Hamming_Encoder_init(&encoder);
 
 		encoder.type = TDC_HAMMING_ENCODER_TYPE_74;
-		printf(">>> buffer: %s\n", buffer);
+		// printf(">>> buffer: %s\n", buffer);
 		encoder.encodeBuffer(&encoder, buffer);
 
 		char expected[10]="";
-		sprintf(expected, "%s%c", expected, 0b00101010); 
-		sprintf(expected, "%s%c", expected, 0b00111100); 
-		sprintf(expected, "%s%c", expected, 0b01100110); 
-		sprintf(expected, "%s%c", expected, 0b01101001); 
-		sprintf(expected, "%s%c", expected, 0b00111100); 
-		sprintf(expected, "%s%c", expected, 0b00111100);
+		sprintf(expected, "%s%c", expected, 0b0101010); 
+		sprintf(expected, "%s%c", expected, 0b0011110); 
+		sprintf(expected, "%s%c", expected, 0b0110011); 
+		sprintf(expected, "%s%c", expected, 0b1001011); 
+		sprintf(expected, "%s%c", expected, 0b0011110); 
+		sprintf(expected, "%s%c", expected, 0b0011110);
 
 		cmp_mem(encoder.outBuffer, expected, 6, "tdc_Hamming_Encoder encodeBuffer");
 		// buffer = encoder.outBuffer; 
@@ -72,26 +72,44 @@ int main() {
 
 	}
 
-	// /* tdc_Hamming_Decoder decodeByte */
-	// {
-		// tdc_Hamming_Decoder decoder;	
-		// tdc_Hamming_Decoder_init(&decoder);
-		
-		// decoder.type = TDC_HAMMING_ENCODER_TYPE_74;
-		// decoder.input = 0b00001110;
-		// decoder.decodeByte(&decoder);	
-		// // cmp_ok(decoder.output, "==", 0b00001110, "tdc_Hamming_Decoder decodeByte");
-	// }
-	
-	// /* tdc_Hamming_Decoder decodeBuffer */
-	// {
-		// tdc_Hamming_Decoder decoder; 
-		// tdc_Hamming_Decoder_init(&decoder);
+	/* tdc_Hamming_Decoder decodeByte */
+	{
+		tdc_Hamming_Decoder decoder;	
+		tdc_Hamming_Decoder_init(&decoder);
 
-		// decoder.type = TDC_HAMMING_ENCODER_TYPE_74;
-		// decoder.decodeBuffer(&decoder, "Hello");
-		// // cmp_ok(decoder.output, "==", 0b00001110, "tdc_Hamming_Decoder decodeBuffer");
-	// }
+		decoder.input = 0b0101010;
+		decoder.decodeByte(&decoder);	
+		cmp_ok(decoder.output, "==", 0b0101010, "tdc_Hamming_Decoder decodeByte ok 1");
+
+		decoder.input = 0b1001011;
+		decoder.decodeByte(&decoder);	
+		cmp_ok(decoder.output, "==", 0b1001011, "tdc_Hamming_Decoder decodeByte ok 2");
+
+		decoder.input = 0b1101011;
+		decoder.decodeByte(&decoder);	
+		cmp_ok(decoder.output, "==", 0b1001011, "tdc_Hamming_Decoder decodeByte wrong 1");
+
+		decoder.input = 0b0011101;
+		decoder.decodeByte(&decoder);	
+		cmp_ok(decoder.output, "==", 0b0011001, "tdc_Hamming_Decoder decodeByte wrong 2");		
+	}
+	
+	/* tdc_Hamming_Decoder decodeBuffer */
+	{
+		tdc_Hamming_Decoder decoder; 
+		tdc_Hamming_Decoder_init(&decoder);
+		
+		char buffer[10]="";
+		sprintf(buffer, "%s%c", buffer, 0b0101010); 
+		sprintf(buffer, "%s%c", buffer, 0b0011110); 
+		sprintf(buffer, "%s%c", buffer, 0b0110011); 
+		sprintf(buffer, "%s%c", buffer, 0b1001011); 
+		sprintf(buffer, "%s%c", buffer, 0b0011110); 
+		sprintf(buffer, "%s%c", buffer, 0b0011110); // dps conviene tomarlo del file
+
+		decoder.decodeBuffer(&decoder, buffer);
+		cmp_mem(decoder.outBuffer, "Ch3", 3, "tdc_Hamming_Decoder decodeBuffer");
+	}
 
 	/* tdc_Hamming_File write */
 	{

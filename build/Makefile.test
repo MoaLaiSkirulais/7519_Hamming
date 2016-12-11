@@ -1,11 +1,12 @@
 all:
-	
+
 #	compiler
 	@$(GCC) -I../source $(FLAGS) -c ../tests/main.c -o ../binary/main.o
 #	@$(GCC) -I../source $(FLAGS) -c ../tests/bitwise.c -o ../binary/main.o
-	
+
 #	linker
 	@$(GCC) ../binary/main.o \
+		../binary/tdc_Hamming_Controller.o \
 		../binary/tdc_Hamming_Decoder.o \
 		../binary/tdc_Hamming_Encoder.o \
 		../binary/tdc_Hamming_File.o \

@@ -25,7 +25,7 @@ static int read(tdc_Hamming_File *this) {
 		long fsize = ftell(file);
 		fseek(file, 0, SEEK_SET);  //same as rewind(f);
 		
-		// printf("fsize: %lu\n", fsize);
+		printf("fsize: %lu\n", fsize);
 
 		this->inBuffer = realloc(this->inBuffer, fsize + 1);		
 		// printf("this->inBuffer: %ld\n", sizeof(this->inBuffer));
@@ -62,7 +62,7 @@ static int write(tdc_Hamming_File *this) {
 	}
 
 	/* Write your buffer to disk. */
-	fwrite(this->outBuffer, strlen(this->outBuffer) + 1, 1, file);
+	fwrite(this->outBuffer, strlen(this->outBuffer), 1, file);
 	fclose(file);
 
 	/* fin */

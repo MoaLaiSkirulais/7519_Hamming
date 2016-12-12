@@ -10,16 +10,26 @@
 #include "tdc_Hamming_Helper.h"
 
 /* 
+ * tdc_Hamming_Decoder_Mode 
+ */
+typedef enum {
+
+	/* 00 */ TDC_HAMMING_DECODER_MODE_NOCORRECT,
+	/* 01 */ TDC_HAMMING_DECODER_MODE_CORRECT /* default */
+	
+} tdc_Hamming_Decoder_Mode;
+
+/* 
  * tdc_Hamming_Decoder
  */
 typedef struct tdc_Hamming_Decoder {
 	
-	tdc_Hamming_Encoder_Type type;
-	char input;
-	char output;
+	// tdc_Hamming_Encoder_Type type;
+	tdc_Hamming_Decoder_Mode mode;
+	unsigned char input;
+	unsigned char output;
 	
-	unsigned char outNibble;
-	
+	unsigned char outNibble;	
 	unsigned char *outBuffer; 
 	
 	int (*destroy)();

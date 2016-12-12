@@ -14,6 +14,9 @@
  */
 typedef struct tdc_Hamming_Controller {
 	
+	tdc_Hamming_Decoder decoder;
+	tdc_Hamming_Encoder encoder; 
+		
 	int (*destroy)();
 	int (*decode)();
 	int (*encode)();

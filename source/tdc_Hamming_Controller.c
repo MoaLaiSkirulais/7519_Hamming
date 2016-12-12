@@ -18,16 +18,13 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
 	}
 
 	/* decodeo archivo fuente */
-	tdc_Hamming_Decoder decoder; 
-	tdc_Hamming_Decoder_init(&decoder);
-
-	retval = decoder.decodeBuffer(&decoder, file.inBuffer);
+	retval = this->decoder.decodeBuffer(&this->decoder, file.inBuffer);
 	if (retval != TDC_HAMMING_OK){
 		return retval;
 	}
 	
 	/* escribo archivo de salida encodeado */
-	file.outBuffer = decoder.outBuffer; 
+	file.outBuffer = this->decoder.outBuffer; 
 	sprintf(file.outPath, "%s%s", file.inPath, ".decoded");
 	printf("file.outPath: %s\n", file.outPath);
 	retval = file.write(&file);
@@ -37,10 +34,7 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
 	
 	/* fin */
 	file.destroy(&file);
-	decoder.destroy(&decoder);
-	
-	return TDC_HAMMING_OK;
-	
+	return TDC_HAMMING_OK;	
 
 }
 
@@ -62,16 +56,13 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
 	}
 
 	/* encodeo archivo fuente */
-	tdc_Hamming_Encoder encoder; 
-	tdc_Hamming_Encoder_init(&encoder);
-
-	retval = encoder.encodeBuffer(&encoder, file.inBuffer);
+	retval = this->encoder.encodeBuffer(&this->encoder, file.inBuffer);
 	if (retval != TDC_HAMMING_OK){
 		return retval;
 	}
 	
 	/* escribo archivo de salida encodeado */
-	file.outBuffer = encoder.outBuffer; 
+	file.outBuffer = this->encoder.outBuffer; 
 	sprintf(file.outPath, "%s%s", file.inPath, ".encoded");
 	printf("file.outPath: %s\n", file.outPath);
 	retval = file.write(&file);
@@ -81,7 +72,6 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
 	
 	/* fin */
 	file.destroy(&file);
-	encoder.destroy(&encoder);
 	return TDC_HAMMING_OK;
 
 }
@@ -91,6 +81,8 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
  */
 static int destroy(tdc_Hamming_Controller *this) {
 
+	this->decoder.destroy(&this->decoder);
+	this->encoder.destroy(&this->encoder);
 	return TDC_HAMMING_OK;
 
 }
@@ -99,6 +91,9 @@ static int destroy(tdc_Hamming_Controller *this) {
  * tdc_Hamming_Controller_init
  */
 int tdc_Hamming_Controller_init(tdc_Hamming_Controller *obj) {
+	
+	tdc_Hamming_Decoder_init(&obj->decoder);
+	tdc_Hamming_Encoder_init(&obj->encoder);
 
 	obj->destroy = destroy;
 	obj->decode = decode;

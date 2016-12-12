@@ -14,13 +14,13 @@ int main (int argc, char const *argv[]) {
 	/* globals */	
 	// char *buffer;
 	
-	// #include "release.c"
+	#include "release.c"
 	
 	// #include "tdc_Hamming_Decoder decodeFile.test.c"
 	// #include "tdc_Hamming_Decoder decodeBuffer impar.test.c"
 	// #include "tdc_Hamming_Decoder decodeBuffer zeroBytes.c"
 	// #include "tdc_Hamming_Controller.c"
-	#include "tdc_Hamming_Controller decodeFileWithError.test.c"
+	// #include "tdc_Hamming_Controller decodeFileWithError.test.c"
 	// #include "tdc_Hamming_Decoder bufferEncodeDecode.c"
 	
 	// #include "tdc_Hamming_File read.test.c"

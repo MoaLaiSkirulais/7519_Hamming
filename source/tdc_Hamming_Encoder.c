@@ -9,14 +9,9 @@ typedef unsigned char nibble;
 static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
 
 	this->outBuffer = realloc(this->outBuffer, strlen(buffer) * 2 + 1);
-	printf("strlen(buffer): %lu\n", strlen(buffer)); 
-	printf("strlen(buffer): %lu\n", strlen(buffer) * 2 + 1); 
-	printf("buffer: %s\n", buffer);
 
 	int i;
 	for (i = 0; i < strlen(buffer); i++){
-		
-		printf("i: %d\n", i); 
 		
 		unsigned char nible1;
 		unsigned char nible2;
@@ -26,7 +21,6 @@ static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
 
 		tdc_Hamming_Helper h;
 		tdc_Hamming_Helper_init(&h);
-		printf("buffer[i]: %c ", buffer[i]); h.printBits(&h, sizeof(buffer[i]), &buffer[i]);
 
 		tdc_Hamming_Encoder encoder;
 		tdc_Hamming_Encoder_init(&encoder);
@@ -36,27 +30,15 @@ static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
 		encoder.output = encoder.output | 0b10000000; /* agrega un 1 en el bit no usado para evitar el caracter EOL de C */
 		
 		memcpy(&this->outBuffer[i*2], &encoder.output, 1); 
-		// sprintf(this->outBuffer, "%s%c", this->outBuffer, encoder.output); 
-		printf("nible1: "); h.printBits(&h, sizeof(nible1), &nible1);
-		printf("\toutput: "); h.printBits(&h, sizeof(encoder.output), &encoder.output);
 		this->outBuffer[i*2+1] = '\0'; /* siempre adiciona el EOL para el strlen */
-		// printf("this->outBuffer: %s\n", this->outBuffer); 
-		printf("strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
-
-		
 		
 		encoder.input = nible2; 
 		encoder.encodeByte(&encoder);		
 		encoder.output = encoder.output | 0b10000000; /* agrega un 1 en el bit no usado para evitar el caracter EOL de C */
 				
 		memcpy(&this->outBuffer[i*2+1], &encoder.output, 1); 
-		// sprintf(this->outBuffer, "%s%c", this->outBuffer, encoder.output); 
 		encoder.destroy(&encoder);
-		printf("nible2: "); h.printBits(&h, sizeof(nible2), &nible2);
-		printf("\toutput: "); h.printBits(&h, sizeof(encoder.output), &encoder.output);
 		this->outBuffer[i*2+2] = '\0'; /* siempre adiciona el EOL para el strlen */
-		// printf("this->outBuffer: %s\n", this->outBuffer); 
-		printf("strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
 
 	}
 

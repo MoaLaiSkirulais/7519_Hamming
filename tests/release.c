@@ -9,8 +9,8 @@
 	-d | -e (decode|encode)\n\
 	filename (existing file, to encode or decode)";
 	
-	printf("argc: %d\n", argc);
-	printf("argv[0]: %s\n", argv[0]);
+	// printf("argc: %d\n", argc);
+	// printf("argv[0]: %s\n", argv[0]);
 
 	/* start */
 	if (argc!=3) {

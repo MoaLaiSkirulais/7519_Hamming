@@ -26,7 +26,6 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
 	/* escribo archivo de salida encodeado */
 	file.outBuffer = this->decoder.outBuffer; 
 	sprintf(file.outPath, "%s%s", file.inPath, ".decoded");
-	printf("file.outPath: %s\n", file.outPath);
 	retval = file.write(&file);
 	if (retval != TDC_HAMMING_OK){
 		return retval;
@@ -64,7 +63,6 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
 	/* escribo archivo de salida encodeado */
 	file.outBuffer = this->encoder.outBuffer; 
 	sprintf(file.outPath, "%s%s", file.inPath, ".encoded");
-	printf("file.outPath: %s\n", file.outPath);
 	retval = file.write(&file);
 	if (retval != TDC_HAMMING_OK){
 		return retval;

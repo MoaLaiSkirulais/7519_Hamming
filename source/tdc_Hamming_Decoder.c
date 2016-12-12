@@ -24,7 +24,6 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 	 p/ej si son 11 bytes  entonces seran 6 bytes y completa con 0000 */
 
 	int newSize = strlen(buffer) / 2 + strlen(buffer) % 2;
-	// printf("newSize: %d\n", newSize);
 	this->outBuffer = realloc(this->outBuffer, newSize + 1);
 	// strcpy(this->outBuffer, ""); 
 
@@ -38,9 +37,6 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 	for (i = 0; i < strlen(buffer); i++){
 
 		/* decodea el byte */
-		// tdc_Hamming_Decoder decoder;
-		// tdc_Hamming_Decoder_init(&decoder);
-
 		this->input = buffer[i]; 
 		this->decodeByte(this);
 
@@ -53,7 +49,6 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 			this->outBuffer[i/2+1] = '\0'; /* siempre adiciona el EOL para el strlen */
 		}
 
-		// decoder.destroy(&decoder);
 	}
 	
 	/* si eran impares los hamming, agrega uno para salvar el ultimo nibble */
@@ -64,8 +59,6 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 	}
 
 	/* fin */
-	// printf("strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
-	// printf("this->outBuffer: %s\n", this->outBuffer); 
 	return TDC_HAMMING_OK;
 
 }
@@ -122,7 +115,6 @@ static int decodeByte(tdc_Hamming_Decoder *this) {
 	/* flip / correct */
 	unsigned char correctedByte;
 	correctedByte = this->input;
-	// printf("this->mode: %d\n", this->mode);
 	if (this->mode == TDC_HAMMING_DECODER_MODE_CORRECT) {
 		correctedByte = swapBit ^ this->input;
 	}

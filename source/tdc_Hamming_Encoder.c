@@ -6,12 +6,15 @@ typedef unsigned char nibble;
 /* 
  * encodeBuffer
  */
-static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
+static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer, int size) {
+// static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
 
 	this->outBuffer = realloc(this->outBuffer, strlen(buffer) * 2 + 1);
+	printf("strlen(buffer): %lu\n", strlen(buffer)); 
 
 	int i;
-	for (i = 0; i < strlen(buffer); i++){
+	// for (i = 0; i < strlen(buffer); i++){
+	for (i = 0; i < size; i++){
 		
 		unsigned char nible1;
 		unsigned char nible2;
@@ -31,6 +34,8 @@ static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
 		
 		memcpy(&this->outBuffer[i*2], &encoder.output, 1); 
 		this->outBuffer[i*2+1] = '\0'; /* siempre adiciona el EOL para el strlen */
+		printf("\n strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
+		printf("encoder.output: "); h.printBits(&h, sizeof(encoder.output), &encoder.output);
 		
 		encoder.input = nible2; 
 		encoder.encodeByte(&encoder);		
@@ -38,7 +43,9 @@ static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
 				
 		memcpy(&this->outBuffer[i*2+1], &encoder.output, 1); 
 		encoder.destroy(&encoder);
-		this->outBuffer[i*2+2] = '\0'; /* siempre adiciona el EOL para el strlen */
+		this->outBuffer[i*2+2] = '\0'; /* siempre adiciona el EOL para el strlen */		
+		printf("strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
+		printf("encoder.output: "); h.printBits(&h, sizeof(encoder.output), &encoder.output);
 
 	}
 

@@ -6,21 +6,19 @@ typedef unsigned char nibble;
 /* 
  * encodeBuffer
  */
-static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer, int size) {
-// static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer) {
+static int encodeBuffer(tdc_Hamming_Encoder *this, tdc_Hamming_Buffer *buffer) {
 
-	this->outBuffer = realloc(this->outBuffer, strlen(buffer) * 2 + 1);
-	printf("strlen(buffer): %lu\n", strlen(buffer)); 
+	this->outBuffer.bytes = malloc(buffer->size * 2);
+	this->outBuffer.size = buffer->size * 2;
 
 	int i;
-	// for (i = 0; i < strlen(buffer); i++){
-	for (i = 0; i < size; i++){
+	for (i = 0; i < buffer->size; i++){
 		
 		unsigned char nible1;
 		unsigned char nible2;
 
-		nible1 = (buffer[i] >> 4) & 0b00001111; 
-		nible2 = 0b00001111 & buffer[i]; 
+		nible1 = (buffer->bytes[i] >> 4) & 0b00001111; 
+		nible2 = 0b00001111 & buffer->bytes[i]; 
 
 		tdc_Hamming_Helper h;
 		tdc_Hamming_Helper_init(&h);
@@ -30,26 +28,15 @@ static int encodeBuffer(tdc_Hamming_Encoder *this, char *buffer, int size) {
 		
 		encoder.input = nible1; 
 		encoder.encodeByte(&encoder);
-		encoder.output = encoder.output | 0b10000000; /* agrega un 1 en el bit no usado para evitar el caracter EOL de C */
 		
-		memcpy(&this->outBuffer[i*2], &encoder.output, 1); 
-		this->outBuffer[i*2+1] = '\0'; /* siempre adiciona el EOL para el strlen */
-		printf("\n strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
-		printf("encoder.output: "); h.printBits(&h, sizeof(encoder.output), &encoder.output);
+		memcpy(&this->outBuffer.bytes[i*2], &encoder.output, 1); 
 		
 		encoder.input = nible2; 
 		encoder.encodeByte(&encoder);		
-		encoder.output = encoder.output | 0b10000000; /* agrega un 1 en el bit no usado para evitar el caracter EOL de C */
 				
-		memcpy(&this->outBuffer[i*2+1], &encoder.output, 1); 
-		encoder.destroy(&encoder);
-		this->outBuffer[i*2+2] = '\0'; /* siempre adiciona el EOL para el strlen */		
-		printf("strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
-		printf("encoder.output: "); h.printBits(&h, sizeof(encoder.output), &encoder.output);
-
+		memcpy(&this->outBuffer.bytes[i*2+1], &encoder.output, 1); 
 	}
 
-	// printf("strlen(this->outBuffer): %lu\n", strlen(this->outBuffer)); 
 	return TDC_HAMMING_OK;
 
 }
@@ -96,7 +83,11 @@ static int encodeByte(tdc_Hamming_Encoder *this) {
  */
 static int destroy(tdc_Hamming_Encoder *this) {
 
-	free(this->outBuffer);
+	if (this->outBuffer.bytes){
+		free(this->outBuffer.bytes);
+		this->outBuffer.bytes = NULL;
+	}
+
 	return TDC_HAMMING_OK;
 
 }
@@ -106,8 +97,7 @@ static int destroy(tdc_Hamming_Encoder *this) {
  */
 int tdc_Hamming_Encoder_init(tdc_Hamming_Encoder *obj) {
 	
-	obj->outBuffer = malloc(sizeof(char));
-	strcpy(obj->outBuffer, "");
+	obj->outBuffer.bytes = NULL;
 
 	obj->destroy = destroy;
 	obj->encodeBuffer = encodeBuffer;

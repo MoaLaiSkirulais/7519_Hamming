@@ -30,7 +30,7 @@ typedef struct tdc_Hamming_Decoder {
 	unsigned char output;
 	
 	unsigned char outNibble;	
-	unsigned char *outBuffer; 
+	tdc_Hamming_Buffer outBuffer;
 	
 	int (*destroy)();
 	int (*decodeBuffer)();

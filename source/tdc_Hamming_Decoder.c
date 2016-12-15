@@ -17,15 +17,12 @@ unsigned char SumBitsModulo2(unsigned char bits){
 /* 
  * decodeBuffer
  */
-static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
+static int decodeBuffer(tdc_Hamming_Decoder *this, tdc_Hamming_Buffer *buffer) {
 	
-	/* calcula el tamaño del buffer de salida 
-	 p/ej si son 10 bytes entonces seran 5 bytes
-	 p/ej si son 11 bytes  entonces seran 6 bytes y completa con 0000 */
-
-	int newSize = strlen(buffer) / 2 + strlen(buffer) % 2;
-	this->outBuffer = realloc(this->outBuffer, newSize + 1);
-	// strcpy(this->outBuffer, ""); 
+	/* calcula el tamaño del buffer de salida */
+	int newSize = buffer->size / 2 + buffer->size % 2;
+	this->outBuffer.bytes = malloc(newSize);
+	this->outBuffer.size = newSize;
 
 	tdc_Hamming_Helper h;
 	tdc_Hamming_Helper_init(&h);		
@@ -34,10 +31,10 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 	unsigned char newByte;
 	
 	int i;
-	for (i = 0; i < strlen(buffer); i++){
+	for (i = 0; i < buffer->size; i++){
 
 		/* decodea el byte */
-		this->input = buffer[i]; 
+		this->input = buffer->bytes[i]; 
 		this->decodeByte(this);
 
 		/* cada dos bytes decodeados agrega uno al buffer */
@@ -45,8 +42,7 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 			newByte = (this->outNibble << 4) & 0b11110000; 
 		} else {
 			newByte = newByte | this->outNibble;
-			memcpy(&this->outBuffer[i/2], &newByte, 1); 
-			this->outBuffer[i/2+1] = '\0'; /* siempre adiciona el EOL para el strlen */
+			memcpy(&this->outBuffer.bytes[i/2], &newByte, 1); 
 		}
 
 	}
@@ -54,11 +50,11 @@ static int decodeBuffer(tdc_Hamming_Decoder *this, char *buffer) {
 	/* si eran impares los hamming, agrega uno para salvar el ultimo nibble */
 	if (i % 2 == 1){		
 		newByte = newByte & 0b00001111;
-		memcpy(&this->outBuffer[i/2], &newByte, 1); 
-		this->outBuffer[i/2+1] = '\0'; /* siempre adiciona el EOL para el strlen */
+		memcpy(&this->outBuffer.bytes[i/2], &newByte, 1); 
 	}
 
 	/* fin */
+	// printf("this->outBuffer.size: %d\n", this->outBuffer.size);
 	return TDC_HAMMING_OK;
 
 }
@@ -135,7 +131,11 @@ static int decodeByte(tdc_Hamming_Decoder *this) {
  */
 static int destroy(tdc_Hamming_Decoder *this) {
 
-	free(this->outBuffer);
+	if (this->outBuffer.bytes){
+		free(this->outBuffer.bytes);
+		this->outBuffer.bytes = NULL;
+	}
+
 	return TDC_HAMMING_OK;
 
 }
@@ -145,8 +145,7 @@ static int destroy(tdc_Hamming_Decoder *this) {
  */
 int tdc_Hamming_Decoder_init(tdc_Hamming_Decoder *obj) {
 
-	obj->outBuffer = malloc(sizeof(char));
-	strcpy(obj->outBuffer, "");
+	obj->outBuffer.bytes = NULL;
 	obj->mode = TDC_HAMMING_DECODER_MODE_CORRECT;
 
 	obj->destroy = destroy;

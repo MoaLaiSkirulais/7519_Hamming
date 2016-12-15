@@ -18,13 +18,17 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
 	}
 
 	/* decodeo archivo fuente */
-	retval = this->decoder.decodeBuffer(&this->decoder, file.inBuffer);
+	retval = this->decoder.decodeBuffer(&this->decoder, &file.inBuffer);
 	if (retval != TDC_HAMMING_OK){
 		return retval;
 	}
 	
-	/* escribo archivo de salida encodeado */
-	file.outBuffer = this->decoder.outBuffer; 
+	/* traspaso buffer de salida encodeado */
+	file.outBuffer.bytes = malloc(this->decoder.outBuffer.size); 
+	memcpy(file.outBuffer.bytes, this->decoder.outBuffer.bytes, this->decoder.outBuffer.size); 
+	file.outBuffer.size = this->decoder.outBuffer.size; 
+
+	/* escribo a disco*/
 	sprintf(file.outPath, "%s%s", file.inPath, ".decoded");
 	retval = file.write(&file);
 	if (retval != TDC_HAMMING_OK){
@@ -55,13 +59,17 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
 	}
 
 	/* encodeo archivo fuente */
-	retval = this->encoder.encodeBuffer(&this->encoder, file.inBuffer);
+	retval = this->encoder.encodeBuffer(&this->encoder, &file.inBuffer);
 	if (retval != TDC_HAMMING_OK){
 		return retval;
 	}
 	
 	/* escribo archivo de salida encodeado */
-	file.outBuffer = this->encoder.outBuffer; 
+	file.outBuffer.bytes = malloc(this->encoder.outBuffer.size);	
+	memcpy(file.outBuffer.bytes, this->encoder.outBuffer.bytes, this->encoder.outBuffer.size); 
+	file.outBuffer.size = this->encoder.outBuffer.size; 
+
+	/* escribo a disco*/
 	sprintf(file.outPath, "%s%s", file.inPath, ".encoded");
 	retval = file.write(&file);
 	if (retval != TDC_HAMMING_OK){
@@ -79,7 +87,7 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
  */
 static int destroy(tdc_Hamming_Controller *this) {
 
-	this->decoder.destroy(&this->decoder);
+	this->decoder.destroy(&this->decoder); 
 	this->encoder.destroy(&this->encoder);
 	return TDC_HAMMING_OK;
 

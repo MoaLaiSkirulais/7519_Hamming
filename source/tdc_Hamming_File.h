@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "tdc_Hamming_Buffer.h"
 #include "tdc_Hamming_Error.h"
 
 /* 
@@ -15,8 +16,8 @@ typedef struct tdc_Hamming_File {
 	char inPath[100];
 	char outPath[100];
 	
-	char *inBuffer; 
-	char *outBuffer; 
+	tdc_Hamming_Buffer inBuffer; 
+	tdc_Hamming_Buffer outBuffer; /* es medio confuso dos buffers, deberia alcanzar con uno */
 	
 	int (*destroy)();
 	int (*read)();

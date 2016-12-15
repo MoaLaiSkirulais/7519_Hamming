@@ -18,26 +18,18 @@ static int read(tdc_Hamming_File *this) {
 	char buffer; 
 	int byteCount; 
 
-	/* lectura ok lee byte a byte */
+	/* lectura */
 	if (file) {
 
 		fseek(file, 0, SEEK_END);
 		long fsize = ftell(file);
-		fseek(file, 0, SEEK_SET);  //same as rewind(f);
+		fseek(file, 0, SEEK_SET);  
 		
-		printf("fsize: %lu\n", fsize);
-
-		this->inBuffer = realloc(this->inBuffer, fsize + 1);		
-		// printf("this->inBuffer: %ld\n", sizeof(this->inBuffer));
+		this->inBuffer.bytes = malloc(fsize + 1);		
+		this->inBuffer.size = fsize;
 		
-		// char *aux = malloc(111);	
-		// printf("aux: %lu\n", sizeof(aux));
-		// strcpy(aux, "hol");
-		// printf("aux: %ld\n", sizeof(aux));
-
-		fread(this->inBuffer, fsize, 1, file);
-		this->inBuffer[fsize] = '\0';
-		// printf("this->inBuffer: %s\n", this->inBuffer);
+		fread(this->inBuffer.bytes, fsize, 1, file);
+		this->inBuffer.bytes[fsize] = '\0';
 		
 	}
 
@@ -54,6 +46,7 @@ static int write(tdc_Hamming_File *this) {
 
 	/* open file */
 	FILE *file;
+	printf("this->outPath: %s\n", this->outPath);
 	file = fopen(this->outPath, "wb");
 
 	/* error de apertura */
@@ -61,8 +54,8 @@ static int write(tdc_Hamming_File *this) {
 		return TDC_HAMMING_FILE_ERROR_INVALID_TARGET_FILE;
 	}
 
-	/* Write your buffer to disk. */
-	fwrite(this->outBuffer, strlen(this->outBuffer), 1, file);
+	/* Write your buffer to disk */
+	fwrite(this->outBuffer.bytes, this->outBuffer.size, 1, file);
 	fclose(file);
 
 	/* fin */
@@ -74,8 +67,17 @@ static int write(tdc_Hamming_File *this) {
  * destroy()
  */
 static int destroy(tdc_Hamming_File *this) {
+	
+	if (this->inBuffer.bytes){
+		free(this->inBuffer.bytes);
+		this->inBuffer.bytes = NULL;
+	}
 
-	free(this->inBuffer);
+	if (this->outBuffer.bytes){
+		free(this->outBuffer.bytes);
+		this->outBuffer.bytes = NULL;
+	}
+
 	return TDC_HAMMING_OK;
 
 }
@@ -85,8 +87,8 @@ static int destroy(tdc_Hamming_File *this) {
  */
 int tdc_Hamming_File_init(tdc_Hamming_File *obj) {
 	
-	obj->inBuffer = malloc(sizeof(char));
-	strcpy(obj->inBuffer, "");	
+	obj->inBuffer.bytes = NULL;	
+	obj->outBuffer.bytes = NULL;
 
 	obj->destroy = destroy;
 	obj->read = read;

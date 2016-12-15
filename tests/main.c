@@ -1,4 +1,5 @@
 #include <tap.h>
+#include "tdc_Hamming_Buffer.h"
 #include "tdc_Hamming_Controller.h"
 #include "tdc_Hamming_Decoder.h"
 #include "tdc_Hamming_Encoder.h"
@@ -14,9 +15,9 @@ int main (int argc, char const *argv[]) {
 	/* globals */	
 	// char *buffer;
 	
-	#include "tdc_Hamming_Encoder encodeBuffer with EOL.test.c"
+	// #include "tdc_Hamming_Encoder encodeBuffer with EOL.test.c"
 	// #include "tdc_Hamming_Controller bmp.c"
-	// #include "release.c"
+	#include "release.c"
 	
 	// #include "tdc_Hamming_Decoder decodeFile.test.c"
 	// #include "tdc_Hamming_Decoder decodeBuffer impar.test.c"

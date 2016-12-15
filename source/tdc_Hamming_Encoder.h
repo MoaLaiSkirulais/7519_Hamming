@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "tdc_Hamming_Buffer.h"
 #include "tdc_Hamming_Helper.h"
 #include "tdc_Hamming_Error.h"
 
@@ -27,7 +28,7 @@ typedef struct tdc_Hamming_Encoder {
 	char input;
 	char output;
 	
-	char *outBuffer; 
+	tdc_Hamming_Buffer outBuffer;
 	
 	int (*destroy)();
 	int (*encodeBuffer)();

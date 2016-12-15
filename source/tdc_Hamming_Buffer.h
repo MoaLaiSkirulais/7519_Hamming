@@ -10,7 +10,8 @@
  */
 typedef struct tdc_Hamming_Buffer {
 	
-	char *buffer; 
+	unsigned char *bytes; 
+	// char byte[4]; 
 	int size; 
 
 } tdc_Hamming_Buffer;

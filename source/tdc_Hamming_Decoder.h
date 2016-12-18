@@ -32,9 +32,14 @@ typedef struct tdc_Hamming_Decoder {
 	unsigned char outNibble;	
 	tdc_Hamming_Buffer outBuffer;
 	
+	struct tdc_Hamming_Decoder_Stats {		
+		int totalErrors;
+	} stats;
+
 	int (*destroy)();
 	int (*decodeBuffer)();
 	int (*decodeByte)();
+	int (*stat)();
 
 } tdc_Hamming_Decoder;
 

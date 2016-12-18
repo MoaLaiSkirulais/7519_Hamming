@@ -30,6 +30,7 @@ static int read(tdc_Hamming_File *this) {
 		
 		fread(this->inBuffer.bytes, fsize, 1, file);
 		this->inBuffer.bytes[fsize] = '\0';
+		this->size = fsize;
 		
 	}
 
@@ -46,7 +47,6 @@ static int write(tdc_Hamming_File *this) {
 
 	/* open file */
 	FILE *file;
-	printf("this->outPath: %s\n", this->outPath);
 	file = fopen(this->outPath, "wb");
 
 	/* error de apertura */
@@ -57,6 +57,7 @@ static int write(tdc_Hamming_File *this) {
 	/* Write your buffer to disk */
 	fwrite(this->outBuffer.bytes, this->outBuffer.size, 1, file);
 	fclose(file);
+	this->size = this->outBuffer.size;
 
 	/* fin */
 	return TDC_HAMMING_OK;

@@ -68,10 +68,10 @@ static int decodeByte(tdc_Hamming_Decoder *this) {
 	const unsigned char swapBitTable[8]=
 	{
 		0b0000000, /* 0 */
-		0b0000001, /* 1 no tiene sentido */
-		0b0000010, /* 2 no tiene sentido */
+		0b0000001, /* 1 paridad, descartar */
+		0b0000010, /* 2 paridad, descartar */
 		0b0000100, /* 3 */
-		0b0001000, /* 4 no tiene sentido */
+		0b0001000, /* 4 paridad, descartar */
 		0b0010000, /* 5 */
 		0b0100000, /* 6 */
 		0b1000000  /* 7 */	
@@ -121,7 +121,21 @@ static int decodeByte(tdc_Hamming_Decoder *this) {
 	unsigned char bit234 = (correctedByte >> 3) & 0b00001110;	
 	this->outNibble = bit1 | bit234;
 
+	/* analiza una minima estadistica */
+	this->stat(this, correctionMask);
+
 	/* end */
+	return TDC_HAMMING_OK;
+}
+
+/* 
+ * stat()
+ */
+static int stat(tdc_Hamming_Decoder *this, unsigned char *correctionMask) {
+
+	if (correctionMask != 0b00000000){
+		this->stats.totalErrors++;
+	}
 	return TDC_HAMMING_OK;
 
 }
@@ -147,8 +161,11 @@ int tdc_Hamming_Decoder_init(tdc_Hamming_Decoder *obj) {
 
 	obj->outBuffer.bytes = NULL;
 	obj->mode = TDC_HAMMING_DECODER_MODE_CORRECT;
+	obj->stats.totalErrors = 0;
 
 	obj->destroy = destroy;
 	obj->decodeBuffer = decodeBuffer;
 	obj->decodeByte = decodeByte;
+	obj->stat = stat;
+
 }

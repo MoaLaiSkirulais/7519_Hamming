@@ -8,6 +8,7 @@
 #include "tdc_Hamming_Decoder.h"
 #include "tdc_Hamming_Encoder.h"
 #include "tdc_Hamming_File.h"
+#include "tdc_Hamming_Time.h"
 
 /* 
  * tdc_Hamming_Controller

@@ -5,12 +5,16 @@
  */
 static int decode(tdc_Hamming_Controller *this, char *filename) {
 	
-	int retval = 0;
-
+	/* start timer */
+	tdc_Hamming_Time t;
+	tdc_Hamming_Time_init(&t);
+	t.start(&t);	
+	
 	/* leo el archivo fuente */
 	tdc_Hamming_File file;	
 	tdc_Hamming_File_init(&file);
 
+	int retval = 0;
 	strcpy(file.inPath, filename);
 	retval = file.read(&file);
 	if (retval != TDC_HAMMING_OK){
@@ -22,7 +26,7 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
 	if (retval != TDC_HAMMING_OK){
 		return retval;
 	}
-	
+
 	/* traspaso buffer de salida encodeado */
 	file.outBuffer.bytes = malloc(this->decoder.outBuffer.size); 
 	memcpy(file.outBuffer.bytes, this->decoder.outBuffer.bytes, this->decoder.outBuffer.size); 
@@ -35,6 +39,19 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
 		return retval;
 	}
 	
+	/* end timer */
+	t.end(&t);
+	
+	/* imprimo reporte */
+	printf("\n");
+	printf("\t summary\n");
+	printf("\t -------\n");
+	printf("\t errors : %d bits\n", this->decoder.stats.totalErrors);
+	printf("\t file   : %s\n", file.outPath);
+	printf("\t size   : %d bytes\n", file.size);
+	printf("\t elapsed: %d seconds\n", t.elapsed(&t));
+	printf("\n");
+	
 	/* fin */
 	file.destroy(&file);
 	return TDC_HAMMING_OK;	
@@ -45,13 +62,17 @@ static int decode(tdc_Hamming_Controller *this, char *filename) {
  * encode
  */
 static int encode(tdc_Hamming_Controller *this, char *filename) {
-
-	int retval = 0;
+	
+	/* start timer */
+	tdc_Hamming_Time t;
+	tdc_Hamming_Time_init(&t);
+	t.start(&t);	
 
 	/* leo el archivo fuente */
 	tdc_Hamming_File file;	
 	tdc_Hamming_File_init(&file);
 
+	int retval = 0;
 	strcpy(file.inPath, filename);
 	retval = file.read(&file);
 	if (retval != TDC_HAMMING_OK){
@@ -75,6 +96,18 @@ static int encode(tdc_Hamming_Controller *this, char *filename) {
 	if (retval != TDC_HAMMING_OK){
 		return retval;
 	}
+	
+	/* end timer */
+	t.end(&t);
+	
+	/* imprimo reporte */
+	printf("\n");
+	printf("\t summary\n");
+	printf("\t -------\n");
+	printf("\t file   : %s\n", file.outPath);
+	printf("\t size   : %d bytes\n", file.size);
+	printf("\t elapsed: %d seconds\n", t.elapsed(&t));
+	printf("\n");
 	
 	/* fin */
 	file.destroy(&file);

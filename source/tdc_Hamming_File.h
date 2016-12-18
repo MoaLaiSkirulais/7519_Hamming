@@ -19,6 +19,8 @@ typedef struct tdc_Hamming_File {
 	tdc_Hamming_Buffer inBuffer; 
 	tdc_Hamming_Buffer outBuffer; /* es medio confuso dos buffers, deberia alcanzar con uno */
 	
+	int size;
+	
 	int (*destroy)();
 	int (*read)();
 	int (*write)();

@@ -7,6 +7,7 @@ all: \
 	$(BINARY)/tdc_Hamming_Encoder.o \
 	$(BINARY)/tdc_Hamming_File.o \
 	$(BINARY)/tdc_Hamming_Helper.o \
+	$(BINARY)/tdc_Hamming_Time.o \
 	$(BINARY)/tap.o
 
 $(BINARY)/tdc_Hamming_Controller.o: $(SOURCE)/tdc_Hamming_Controller.c $(SOURCE)/tdc_Hamming_Controller.h 
@@ -22,6 +23,9 @@ $(BINARY)/tdc_Hamming_File.o: $(SOURCE)/tdc_Hamming_File.c $(SOURCE)/tdc_Hamming
 	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 
 $(BINARY)/tdc_Hamming_Helper.o: $(SOURCE)/tdc_Hamming_Helper.c $(SOURCE)/tdc_Hamming_Helper.h 
+	$(GCC) $(INC) $(FLAGS) -c $< -o $@
+
+$(BINARY)/tdc_Hamming_Time.o: $(SOURCE)/tdc_Hamming_Time.c $(SOURCE)/tdc_Hamming_Time.h 
 	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 
 $(BINARY)/tap.o: $(SOURCE)/tap.c $(SOURCE)/tap.h 

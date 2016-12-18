@@ -5,9 +5,23 @@
 	// char *argv[] = {"-d", "../files/sample.txt.encoded", NULL};	
 	// int argc = sizeof(argv) / sizeof(char*) - 1;
 	
-	char *help = "uso:\n\
-	-d | -e | -dn (decode|encode|decode but no correct)\n\
-	filename (existing file, to encode or decode)";
+	char *help = "\n"
+	"\tuse \n"
+	"\t-------\n"
+		
+	"\t$ tdc_Hamming.exe <-e | -d | -dn> <filename>\n\n"
+
+	"\texplain:\n"
+	"\t\t-e      : encode\n"
+	"\t\t-d      : decode with correction\n"
+	"\t\t-dn     : decode without correction\n"
+	"\t\tfilename: absolute or relative path, must exists. \n"
+	"\t\t\tWhen -d, any hamming 7,4 encoded file\n"
+	"\t\t\tWhen -e, any file\n\n"
+
+	"\toutput:\n"
+	"\t\tWhen -d = (filename).decoded\n"
+	"\t\tWhen -e = (filename).encoded\n\n";
 	
 	// printf("argc: %d\n", argc);
 	// printf("argv[0]: %s\n", argv[0]);
